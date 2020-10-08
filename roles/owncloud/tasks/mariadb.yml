@@ -1,0 +1,20 @@
+- name: "{{ db_container_name }} container"
+  docker_container:
+    name: "{{ db_container_name }}"
+    image: webhippie/mariadb:latest
+    restart_policy: always
+    env:
+      MARIADB_ROOT_PASSWORD: "{{ db_root_password }}"
+      MARIADB_USERNAME: "{{ db_username }}"
+      MARIADB_PASSWORD: "{{ db_password }}"
+      MARIADB_DATABASE: "{{ db_name }}"
+      MARIADB_MAX_ALLOWED_PACKET: 128M
+      MARIADB_INNODB_LOG_FILE_SIZE: 64M
+    healthcheck:
+      test: ["CMD", "/usr/bin/healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - "{{ owncloud_volume_dir }}/{{ db_container_name }}/mysql:/var/lib/mysql"
+      - "{{ owncloud_volume_dir }}/{{ db_container_name }}/backup:/var/lib/backup"

@@ -1,0 +1,17 @@
+- hosts: localhost
+  roles:
+    - ansible-modules-bitwarden
+
+- hosts: all
+  become: true
+  roles:
+    - role: users
+    - role: python
+    - role: netplan
+
+- hosts: docker_host
+  become: true
+  roles:
+    - role: docker
+    - role: ssl
+    - role: owncloud

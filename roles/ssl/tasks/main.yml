@@ -1,0 +1,33 @@
+- name: letsencrypt credentials directory
+  file:
+    path: /etc/letsencrypt/credentials
+    state: directory
+    recurse: true
+    owner: root
+    group: root
+
+- name: cloudflare credentials file
+  template:
+    src: cloudflare.ini.j2
+    dest: /etc/letsencrypt/credentials/cloudflare.ini
+
+- name: manage ssl cert script
+  template: 
+    src: manage_ssl_certs.sh.j2
+    dest: /usr/local/sbin/manage_ssl_certs.sh
+    owner: root
+    group: root
+    mode: 0700
+  notify: run ssl cert script
+
+- name: ssl cert renewal cron
+  cron:
+    name: "manage ssl cert"
+    cron_file: /etc/crontab
+    user: root
+    month: "*/2"
+    day: "1"
+    hour: "0"
+    minute: "0"
+    state: present
+    job: /usr/local/sbin/manage_ssl_certs.sh

@@ -1,0 +1,16 @@
+- name: owncloud docker volume directory
+  file:
+    path: owncloud_volume_dir
+    state: directory
+
+- name: manage redis container
+  include_tasks: redis.yml
+
+- name: manage mariadb container
+  include_tasks: mariadb.yml
+
+- name: manage owncloud container
+  include_tasks: owncloud.yml
+
+- name: manage nginx container
+  include_tasks: nginx.yml

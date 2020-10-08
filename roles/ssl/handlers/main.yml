@@ -1,0 +1,2 @@
+- name: run ssl cert script
+  command: /usr/local/sbin/manage_ssl_certs.sh

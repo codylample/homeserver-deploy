@@ -1,0 +1,6 @@
+volume_dir: /dockervols
+
+hosted_services:
+  owncloud:
+    ip_address: 10.0.10.16
+    fqdn: cloud.codylample.com

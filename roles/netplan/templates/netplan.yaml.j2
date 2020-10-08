@@ -1,0 +1,18 @@
+# {{ ansible_managed }}
+network:
+  version: 2
+  ethernets:
+    {{ primary_nic_name }}:
+      dhcp4: no
+      dhcp6: no
+      addresses:
+        - {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}/{{ prefix_length }}
+{% for service in hosted_services %}
+        - {{ hosted_services[service]['ip_address'] }}/{{ prefix_length }} # {{ service }}
+{% endfor %}
+      gateway4: {{ gateway }}
+      nameservers:
+        addresses:
+{% for dns_ip in dns_servers %}
+          - {{ dns_ip }}
+{% endfor %}

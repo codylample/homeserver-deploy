@@ -1,0 +1,16 @@
+---
+- name: Netplan configuration
+  template:
+    src: netplan.yaml.j2
+    dest: /etc/netplan/50-network.yaml
+  notify: 
+    - netplan apply
+    - reboot machine
+
+- name: Ensure installer netplan removed
+  file:
+    path: /etc/netplan/00-installer-config.yaml
+    state: absent
+  notify: 
+    - netplan apply
+    - reboot machine

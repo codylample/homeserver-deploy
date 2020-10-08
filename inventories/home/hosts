@@ -1,0 +1,2 @@
+[docker_host]
+homeserver ansible_host=10.0.10.15 ansible_user=codylample

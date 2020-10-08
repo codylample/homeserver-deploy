@@ -1,0 +1,14 @@
+- name: "{{ redis_container_name }} container"
+  docker_container:
+    name: "{{ redis_container_name }}"
+    image: webhippie/redis:latest
+    restart_policy: always
+    env:
+      REDIS_DATABASES: "1"
+    healthcheck:
+      test: ["CMD", "/usr/bin/healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - "{{ owncloud_volume_dir }}/{{ redis_container_name }}/redis:/var/lib/redis"

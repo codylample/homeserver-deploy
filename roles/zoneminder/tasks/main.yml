@@ -1,0 +1,22 @@
+- name: "{{ zoneminder_container_name }} container"
+  docker_container:
+    name: "{{ zoneminder_container_name }}"
+    image: dlandon/zoneminder:latest
+    restart_policy: always
+    env:
+      TZ: "America/Chicago"
+      SHMEM: "50%"
+      PUID: "99"
+      PGID: "100"
+      INSTALL_HOOK: "0"
+      INSTALL_FACE: "0"
+      INSTALL_TINY_YOLOV3: "0"
+      INSTALL_YOLOV3: "0"
+      INSTALL_TINY_YOLOV4: "0"
+      INSTALL_YOLOV4: "0"
+      MULTI_PORT_START: "0"
+      MULTI_PORT_END: "0"
+    ports:
+      - 10.0.10.18:8443:443
+      - 10.0.10.18:8080:80
+      - 10.0.10.18:9000:9000

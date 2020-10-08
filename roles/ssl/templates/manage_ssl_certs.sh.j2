@@ -1,0 +1,12 @@
+#!/bin/bash
+
+{% for service in hosted_services %}
+docker run -it --rm --name certbot \
+    -v "/etc/letsencrypt:/etc/letsencrypt" \
+    certbot/dns-cloudflare \
+    certonly \
+        --dns-cloudflare \
+        --dns-cloudflare-credentials /etc/letsencrypt/credentials/cloudflare.ini \
+        -d {{ hosted_services[service]['fqdn'] }} \
+        --noninteractive
+{% endfor %}

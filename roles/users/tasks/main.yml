@@ -1,0 +1,7 @@
+- name: manage sudoers file
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: "^{{ ansible_user }}"
+    line: "{{ ansible_user }}\tALL=(ALL) NOPASSWD:ALL"
+    validate: '/usr/sbin/visudo -cf %s'

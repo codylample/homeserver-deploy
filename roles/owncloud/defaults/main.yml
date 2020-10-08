@@ -1,0 +1,18 @@
+owncloud_volume_dir: "{{ volume_dir }}/owncloud" 
+
+owncloud_version: 10.5
+ip_address: "{{ hosted_services[ansible_role_name]['ip_address'] }}"
+fqdn: "{{ hosted_services[ansible_role_name]['fqdn'] }}"
+
+redis_container_name: "redis"
+nginx_container_name: "nginx"
+
+db_container_name: "mariadb"
+db_root_password: "{{ lookup('bitwarden', 'owncloud_db', field='root_password', custom_field=true) }}"
+db_username: "{{ lookup('bitwarden', 'owncloud_db', field='username') }}"
+db_password: "{{ lookup('bitwarden', 'owncloud_db', field='password') }}"
+db_name: owncloud
+
+owncloud_container_name: "owncloud"
+owncloud_admin_username: "{{ lookup('bitwarden', 'owncloud_admin', field='username') }}"
+owncloud_admin_password: "{{ lookup('bitwarden', 'owncloud_admin', field='password') }}"

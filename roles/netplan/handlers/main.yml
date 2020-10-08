@@ -1,0 +1,6 @@
+- name: netplan apply
+  command: netplan apply
+
+- name: reboot machine
+  reboot:
+    reboot_timeout: 600
