@@ -7,5 +7,5 @@ To deploy:
 bw unlock
 
 # Run ansible playbook
-ansible-playbook -i inventories/home playbook.yaml
+ansible-playbook -i inventories/home -e email_address=<user@domain.com> playbook.yaml
 ```
