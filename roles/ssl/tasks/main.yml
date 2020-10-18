@@ -31,3 +31,5 @@
     minute: "0"
     state: present
     job: /usr/local/sbin/manage_ssl_certs.sh
+
+- meta: flush_handlers

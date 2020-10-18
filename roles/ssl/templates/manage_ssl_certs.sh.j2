@@ -8,5 +8,7 @@ docker run -it --rm --name certbot \
         --dns-cloudflare \
         --dns-cloudflare-credentials /etc/letsencrypt/credentials/cloudflare.ini \
         -d {{ hosted_services[service]['fqdn'] }} \
+        --agree-tos \
+        --email {{ email_address }} \
         --noninteractive
 {% endfor %}
