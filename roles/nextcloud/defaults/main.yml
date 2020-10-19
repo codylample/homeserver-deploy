@@ -1,0 +1,19 @@
+nextcloud_volume_dir: "{{ volume_dir }}/nextcloud"
+
+ip_address: "{{ hosted_services[ansible_role_name]['ip_address'] }}"
+fqdn: "{{ hosted_services[ansible_role_name]['fqdn'] }}"
+
+redis_container_name: "redis"
+nginx_container_name: "nginx"
+
+bridge_network_name: "bridge"
+db_network_name: "nextcloud_db"
+http_network_name: "nextcloud_http"
+
+db_container_name: "mariadb"
+db_root_password: "{{ lookup('bitwarden', 'owncloud_db', field='root_password', custom_field=true) }}"
+db_username: "{{ lookup('bitwarden', 'owncloud_db', field='username') }}"
+db_password: "{{ lookup('bitwarden', 'owncloud_db', field='password') }}"
+db_name: nextcloud
+
+nextcloud_container_name: "nextcloud"

@@ -1,0 +1,17 @@
+openvpn_volume_dir: "{{ volume_dir }}/openvpn"
+
+fqdn: "{{ hosted_services[ansible_role_name]['fqdn'] }}"
+ip_address: "{{ hosted_services[ansible_role_name]['ip_address'] }}"
+openvpn_port: 1194
+
+vpn_subnet: 10.0.11.0
+vpn_subnet_mask: 255.255.255.0
+vpn_subnet_cidr: 24
+
+local_subnet: 10.0.10.0
+local_subnet_mask: 255.255.255.0
+
+openvpn_container_name: openvpn
+openvpn_ca_passphrase: "{{ lookup('bitwarden', 'openvpn_ca_passphrase', field='password') }}"
+
+client_configs_dir: client_configs

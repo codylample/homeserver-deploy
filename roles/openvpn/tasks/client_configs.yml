@@ -1,0 +1,47 @@
+- name: "check if {{ user }}.crt exists"
+  stat:
+    path: "{{ openvpn_volume_dir }}/pki/issued/{{ user }}.crt"
+  register: certfile
+
+- name: "build {{ user }} client certificate"
+  docker_container:
+    name: openvpn_genconfig
+    image: kylemanna/openvpn
+    auto_remove: true
+    detach: false
+    log_driver: none
+    command: >
+      sh -c '
+        echo $CA_PASSPHRASE | easyrsa build-client-full {{ user }} nopass
+      '
+    env:
+      EASYRSA_PASSIN: stdin
+      CA_PASSPHRASE: "{{ openvpn_ca_passphrase }}"
+    volumes:
+      - "{{ openvpn_volume_dir }}:/etc/openvpn"
+  when: certfile.stat.exists == False
+
+- name: "check if {{ user }}.ovpn exists"
+  stat:
+    path: "{{ openvpn_volume_dir }}/{{ client_configs_dir }}/{{ user }}.ovpn"
+  register: ovpn_config
+
+- name: "build {{ user }} client config"
+  docker_container:
+    name: openvpn_genconfig
+    image: kylemanna/openvpn
+    auto_remove: true
+    detach: false
+    log_driver: none
+    command: "sh -c 'ovpn_getclient {{ user }} > /etc/openvpn/{{ client_configs_dir }}/{{ user }}.ovpn'"
+    volumes:
+      - "{{ openvpn_volume_dir }}:/etc/openvpn"
+  when: ovpn_config.stat.exists == False
+  register: build_config
+
+- name: "copy {{ user }}.ovpn to local"
+  fetch:
+    src: "{{ openvpn_volume_dir }}/{{ client_configs_dir }}/{{ user }}.ovpn"
+    dest: "{{ playbook_dir }}/openvpn_configs/{{ user }}.ovpn"
+    flat: true
+  when: build_config.changed

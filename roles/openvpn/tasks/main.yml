@@ -1,0 +1,45 @@
+- name: openvpn data directory
+  file:
+    path: "{{ openvpn_volume_dir }}"
+    state: directory
+
+- name: manage openvpn server configs
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ openvpn_volume_dir }}/{{ item }}"
+  notify: restart openvpn
+  with_items:
+    - openvpn.conf
+    - ovpn_env.sh
+
+- name: check if pki exists
+  stat:
+    path: "{{ openvpn_volume_dir }}/pki"
+  register: pki_dir
+
+- name: openvpn initpki
+  include_tasks: initpki.yml
+  when: pki_dir.stat.exists == False
+
+- name: openvpn container
+  docker_container:
+    name: openvpn
+    image: kylemanna/openvpn
+    restart_policy: always
+    ports:
+      - "{{ ip_address }}:{{ openvpn_port }}:1194/udp"
+    capabilities:
+      - NET_ADMIN
+    volumes:
+      - "{{ openvpn_volume_dir }}:/etc/openvpn"
+
+- name: client configs directory
+  file:
+    path: "{{ openvpn_volume_dir }}/client_configs"
+    state: directory
+
+- name: manage client configs
+  include_tasks: client_configs.yml
+  vars:
+    user: "{{ item }}"
+  loop: "{{ openvpn_users }}"

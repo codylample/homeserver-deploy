@@ -1,10 +1,14 @@
-- name: Ensure docker.io is installed
+- name: manage timezone America/Chicago
+  timezone:
+    name: America/Chicago
+
+- name: ensure docker.io is installed
   apt:
     name: docker.io
     state: latest
     update_cache: yes
 
-- name: Ensure docker pip package is installed
+- name: ensure docker pip package is installed
   pip:
     name: docker
     state: latest

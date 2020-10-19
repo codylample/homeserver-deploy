@@ -1,0 +1,50 @@
+- name: internal docker networks
+  docker_network:
+    name: "{{ item }}"
+    internal: true
+  with_items:
+    - "{{ db_network_name }}"
+    - "{{ http_network_name }}"
+
+- name: "{{ db_container_name }} container"
+  docker_container:
+    name: "{{ db_container_name }}"
+    image: mariadb
+    restart_policy: always
+    command: "--transaction-isolation=READ-COMMITTED --binlog-format=ROW"
+    networks:
+      - name: "{{ db_network_name }}"
+    networks_cli_compatible: true
+    purge_networks: true
+    env:
+      MYSQL_ROOT_PASSWORD: "{{ db_root_password }}"
+      MYSQL_USER: "{{ db_username }}"
+      MYSQL_PASSWORD: "{{ db_password }}"
+      MYSQL_DATABASE: "{{ db_name }}"
+    volumes:
+      - "{{ nextcloud_volume_dir }}/{{ db_container_name }}/mysql:/var/lib/mysql"
+
+- name: "{{ nextcloud_container_name }} container"
+  docker_container:
+    name: "{{ nextcloud_container_name }}"
+    image: nextcloud
+    restart_policy: always
+    networks:
+      - name: "{{ bridge_network_name }}"
+      - name: "{{ db_network_name }}"
+      - name: "{{ http_network_name }}"
+    networks_cli_compatible: true
+    purge_networks: true
+    env:
+      MYSQL_HOST: "{{ db_container_name }}"
+      MYSQL_USER: "{{ db_username }}"
+      MYSQL_PASSWORD: "{{ db_password }}"
+      MYSQL_DATABASE: "{{ db_name }}"
+      OVERWRITEPROTOCOL: https
+      OVERWRITEHOST: "{{ fqdn }}"
+    volumes:
+      - "{{ nextcloud_volume_dir }}/{{ nextcloud_container_name }}/html:/var/www/html"
+      - /etc/localtime:/etc/localtime:ro
+
+- name: manage nginx container
+  include_tasks: nginx.yml

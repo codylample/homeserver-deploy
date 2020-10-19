@@ -1,0 +1,4 @@
+- name: restart openvpn
+  docker_container:
+    name: "{{ openvpn_container_name }}"
+    restart: true

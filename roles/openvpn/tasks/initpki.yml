@@ -1,0 +1,31 @@
+- name: ensure vars file exists
+  copy:
+    content: ""
+    dest: "{{ openvpn_volume_dir }}/vars"
+
+- name: openvpn initpki
+  docker_container:
+    name: openvpn_initpki
+    image: kylemanna/openvpn
+    auto_remove: true
+    detach: false
+    log_driver: none
+    command: >
+      sh -c '
+        easyrsa init-pki &&
+        (
+          echo $CA_PASSPHRASE;
+          echo $CA_PASSPHRASE;
+          echo $CA_PASSPHRASE;
+          echo {{ openvpn_container_name }}
+        ) | easyrsa build-ca &&
+        easyrsa gen-dh &&
+        openvpn --genkey --secret $EASYRSA_PKI/ta.key &&
+        echo $CA_PASSPHRASE | easyrsa build-server-full {{ fqdn }} nopass &&
+        echo $CA_PASSPHRASE | easyrsa gen-crl
+      '
+    env:
+      EASYRSA_PASSIN: stdin
+      CA_PASSPHRASE: "{{ openvpn_ca_passphrase }}"
+    volumes:
+      - "{{ openvpn_volume_dir }}:/etc/openvpn"

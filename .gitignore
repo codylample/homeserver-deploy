@@ -12,3 +12,6 @@ Thumbs.db
 # Ansible files
 *.retry
 playbook.log
+
+# OpenVPN config
+openvpn_configs

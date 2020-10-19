@@ -1,6 +1,13 @@
 volume_dir: /dockervols
 
 hosted_services:
-  owncloud:
-    ip_address: 10.0.10.101
+  nextcloud:
+    ip_address: 10.0.10.15
     fqdn: cloud.codylample.com
+  openvpn:
+    ip_address: 10.0.10.16
+    fqdn: vpn.codylample.com
+
+openvpn_users:
+  - codylample
+  - rheaturakhia
