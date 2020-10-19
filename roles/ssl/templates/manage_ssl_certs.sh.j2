@@ -1,4 +1,5 @@
 #!/bin/bash
+# {{ ansible_managed }}
 
 {% for service in hosted_services %}
 docker run -it --rm --name certbot \
